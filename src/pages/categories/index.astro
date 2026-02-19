@@ -1,0 +1,98 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+
+const rawBase = import.meta.env.BASE_URL ?? "/";
+const basePath =
+  rawBase === "/" ? "/" : `/${rawBase.replace(/^\/+|\/+$/g, "")}/`;
+
+const categoryToSlug = (category) =>
+  category
+    .toLowerCase()
+    .replace(/[^a-z0-9가-힣\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-") || "general";
+
+const posts = await getCollection("blog", ({ data }) => !data.draft);
+
+const grouped = posts.reduce((acc, post) => {
+  const category = post.data.category || "General";
+  if (!acc[category]) acc[category] = [];
+  acc[category].push(post);
+  return acc;
+}, {});
+
+const categories = Object.entries(grouped)
+  .map(([name, items]) => ({
+    name,
+    slug: categoryToSlug(name),
+    count: items.length,
+    latest: items.sort((a, b) => new Date(b.data.pubDate) - new Date(a.data.pubDate))[0],
+  }))
+  .sort((a, b) => a.name.localeCompare(b.name));
+---
+
+<Layout title="Categories | JKGOOOOOOO Blog" description="카테고리 목록">
+  <main class="categories-page">
+    <header>
+      <h1>Categories</h1>
+      <p>주제별로 글을 묶어 볼 수 있습니다.</p>
+    </header>
+    <ul>
+      {categories.map((category) => (
+        <li>
+          <a href={`${basePath}categories/${category.slug}/`}>
+            <div class="line">
+              <strong>{category.name}</strong>
+              <span>{category.count}</span>
+            </div>
+            {category.latest ? <p>{category.latest.data.title}</p> : null}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </main>
+</Layout>
+
+<style>
+  header p {
+    margin: 0.5rem 0 0;
+    color: #a1a1aa;
+  }
+
+  ul {
+    list-style: none;
+    margin: 1.1rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0;
+  }
+
+  li a {
+    display: block;
+    text-decoration: none;
+    padding: 0.85rem 0;
+  }
+
+  .line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  strong {
+    font-size: 1rem;
+  }
+
+  span {
+    color: #a1a1aa;
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+
+  li p {
+    margin: 0.35rem 0 0;
+    color: #a1a1aa;
+  }
+</style>

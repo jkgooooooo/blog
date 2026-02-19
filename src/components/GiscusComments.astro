@@ -1,0 +1,47 @@
+---
+const repo = import.meta.env.PUBLIC_GISCUS_REPO;
+const repoId = import.meta.env.PUBLIC_GISCUS_REPO_ID;
+const category = import.meta.env.PUBLIC_GISCUS_CATEGORY ?? "General";
+const categoryId = import.meta.env.PUBLIC_GISCUS_CATEGORY_ID;
+const mapping = import.meta.env.PUBLIC_GISCUS_MAPPING ?? "pathname";
+const strict = import.meta.env.PUBLIC_GISCUS_STRICT ?? "0";
+const reactionsEnabled = import.meta.env.PUBLIC_GISCUS_REACTIONS_ENABLED ?? "1";
+const emitMetadata = import.meta.env.PUBLIC_GISCUS_EMIT_METADATA ?? "0";
+const inputPosition = import.meta.env.PUBLIC_GISCUS_INPUT_POSITION ?? "bottom";
+const theme = import.meta.env.PUBLIC_GISCUS_THEME ?? "dark";
+const lang = import.meta.env.PUBLIC_GISCUS_LANG ?? "ko";
+const loading = import.meta.env.PUBLIC_GISCUS_LOADING ?? "lazy";
+
+const enabled = Boolean(repo && repoId && categoryId);
+---
+
+{
+  enabled ? (
+    <section class="giscus-wrap">
+      <script
+        src="https://giscus.app/client.js"
+        data-repo={repo}
+        data-repo-id={repoId}
+        data-category={category}
+        data-category-id={categoryId}
+        data-mapping={mapping}
+        data-strict={strict}
+        data-reactions-enabled={reactionsEnabled}
+        data-emit-metadata={emitMetadata}
+        data-input-position={inputPosition}
+        data-theme={theme}
+        data-lang={lang}
+        data-loading={loading}
+        crossorigin="anonymous"
+        async
+      ></script>
+    </section>
+  ) : null
+}
+
+<style>
+  .giscus-wrap {
+    margin-top: 2.8rem;
+    padding-top: 1.4rem;
+  }
+</style>

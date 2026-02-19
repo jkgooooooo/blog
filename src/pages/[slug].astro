@@ -1,0 +1,155 @@
+---
+import { getCollection, render } from "astro:content";
+import GiscusComments from "../components/GiscusComments.astro";
+import Layout from "../layouts/Layout.astro";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog", ({ data }) => !data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const description = post.data.description?.trim() || `${post.data.title} 글 요약`;
+const category = post.data.category || "General";
+const categorySlug = category
+  .toLowerCase()
+  .replace(/[^a-z0-9가-힣\s-]/g, "")
+  .trim()
+  .replace(/\s+/g, "-") || "general";
+const rawBase = import.meta.env.BASE_URL ?? "/";
+const basePath =
+  rawBase === "/" ? "/" : `/${rawBase.replace(/^\/+|\/+$/g, "")}/`;
+const canonical = `${basePath}${post.slug}/`;
+const publishedTime = new Date(post.data.pubDate).toISOString();
+---
+
+<Layout
+  title={`${post.data.title} | JKGOOOOOOO Blog`}
+  description={description}
+  canonical={canonical}
+  type="article"
+  publishedTime={publishedTime}
+>
+  <main class="post-page">
+    <header class="post-head">
+      <a class="back" href={`${basePath}posts/`}>← 모든 글 보기</a>
+      <h1>{post.data.title}</h1>
+      <div class="meta">
+        <a href={`${basePath}categories/${categorySlug}/`}>{category}</a>
+        <time datetime={publishedTime}>{new Date(post.data.pubDate).toLocaleDateString("ko-KR")}</time>
+      </div>
+    </header>
+
+    <article class="post-body">
+      <Content />
+    </article>
+
+    <GiscusComments />
+  </main>
+</Layout>
+
+<style>
+  .post-head {
+    margin-bottom: 1.7rem;
+  }
+
+  .back {
+    color: #a1a1aa;
+    text-decoration: none;
+    font-size: 0.86rem;
+    font-weight: 700;
+  }
+
+  h1 {
+    margin-top: 0.55rem;
+    font-size: clamp(1.9rem, 4.8vw, 2.7rem);
+    line-height: 1.12;
+  }
+
+  .meta {
+    margin-top: 0.6rem;
+    display: flex;
+    gap: 0.7rem;
+    align-items: center;
+    font-size: 0.82rem;
+  }
+
+  .meta a {
+    color: #60a5fa;
+    text-decoration: none;
+    font-weight: 700;
+  }
+
+  .meta time {
+    color: #a1a1aa;
+    font-weight: 600;
+  }
+
+  .post-body :global(h2),
+  .post-body :global(h3) {
+    margin: 1.9rem 0 0.75rem;
+    line-height: 1.33;
+  }
+
+  .post-body :global(h2) {
+    font-size: 1.48rem;
+  }
+
+  .post-body :global(h3) {
+    font-size: 1.2rem;
+  }
+
+  .post-body :global(p),
+  .post-body :global(li) {
+    margin: 0;
+    line-height: 1.9;
+    color: #d4d4d8;
+    font-size: 1.02rem;
+  }
+
+  .post-body :global(p + p),
+  .post-body :global(p + ul),
+  .post-body :global(p + ol),
+  .post-body :global(ul + p),
+  .post-body :global(ol + p) {
+    margin-top: 0.9rem;
+  }
+
+  .post-body :global(ul),
+  .post-body :global(ol) {
+    padding-left: 1.2rem;
+  }
+
+  .post-body :global(blockquote) {
+    margin: 1.2rem 0;
+    padding: 0.85rem 1rem;
+    background: #111113;
+    border-radius: 0 6px 6px 0;
+  }
+
+  .post-body :global(code) {
+    font-family: "Manrope", "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
+    background: #111113;
+    border-radius: 6px;
+    padding: 0.08rem 0.32rem;
+    font-size: 0.9em;
+  }
+
+  .post-body :global(pre) {
+    background: #0f172a;
+    border-radius: 10px;
+    color: #e2e8f0;
+    padding: 1rem;
+    overflow-x: auto;
+  }
+
+  .post-body :global(pre code) {
+    background: transparent;
+    padding: 0;
+    color: inherit;
+  }
+</style>

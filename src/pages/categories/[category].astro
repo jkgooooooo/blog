@@ -1,0 +1,109 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+
+const rawBase = import.meta.env.BASE_URL ?? "/";
+const basePath =
+  rawBase === "/" ? "/" : `/${rawBase.replace(/^\/+|\/+$/g, "")}/`;
+
+export async function getStaticPaths() {
+  const categoryToSlug = (category) =>
+    category
+      .toLowerCase()
+      .replace(/[^a-z0-9가-힣\s-]/g, "")
+      .trim()
+      .replace(/\s+/g, "-") || "general";
+
+  const posts = await getCollection("blog", ({ data }) => !data.draft);
+  const categories = [...new Set(posts.map((post) => post.data.category || "General"))];
+
+  return categories.map((categoryName) => ({
+    params: { category: categoryToSlug(categoryName) },
+    props: {
+      categoryName,
+      posts: posts
+        .filter((post) => (post.data.category || "General") === categoryName)
+        .sort((a, b) => new Date(b.data.pubDate).valueOf() - new Date(a.data.pubDate).valueOf()),
+    },
+  }));
+}
+
+const { categoryName, posts } = Astro.props;
+---
+
+<Layout
+  title={`${categoryName} | Categories`}
+  description={`${categoryName} 카테고리 글 목록`}
+>
+  <main class="category-page">
+    <header>
+      <a class="back" href={`${basePath}categories/`}>← 카테고리 목록</a>
+      <h1>{categoryName}</h1>
+      <p>{posts.length} posts</p>
+    </header>
+    <ul>
+      {posts.map((post) => (
+        <li>
+          <a href={`${basePath}${post.slug}/`}>
+            <h2>{post.data.title}</h2>
+            <p>{post.data.description || "요약 설명을 추가해 주세요."}</p>
+            <time datetime={new Date(post.data.pubDate).toISOString()}>
+              {new Date(post.data.pubDate).toLocaleDateString("ko-KR")}
+            </time>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </main>
+</Layout>
+
+<style>
+  .back {
+    font-size: 0.88rem;
+    color: #a1a1aa;
+    text-decoration: none;
+    font-weight: 700;
+  }
+
+  h1 {
+    margin-top: 0.45rem;
+  }
+
+  header p {
+    margin: 0.35rem 0 0;
+    color: #a1a1aa;
+    font-size: 0.84rem;
+    font-weight: 700;
+  }
+
+  ul {
+    list-style: none;
+    margin: 1rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0;
+  }
+
+  li a {
+    display: block;
+    text-decoration: none;
+    padding: 0.9rem 0;
+  }
+
+  h2 {
+    font-size: 1.08rem;
+    line-height: 1.35;
+  }
+
+  li p {
+    margin: 0.35rem 0;
+    color: #a1a1aa;
+    line-height: 1.7;
+  }
+
+  time {
+    color: #a1a1aa;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+</style>

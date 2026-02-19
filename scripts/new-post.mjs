@@ -1,9 +1,18 @@
 import fs from "node:fs";
 import path from "node:path";
 
-const title = process.argv.slice(2).join(" ").trim();
+const args = process.argv.slice(2);
+let category = "General";
+
+const categoryIndex = args.findIndex((arg) => arg === "--category" || arg === "-c");
+if (categoryIndex >= 0) {
+  category = args[categoryIndex + 1]?.trim() || "General";
+  args.splice(categoryIndex, 2);
+}
+
+const title = args.join(" ").trim();
 if (!title) {
-  console.error('Usage: npm run new:post "Post Title"');
+  console.error('Usage: npm run new:post "Post Title" -- --category "iOS"');
   process.exit(1);
 }
 
@@ -35,6 +44,7 @@ title: "${title.replace(/"/g, '\\"')}"
 description: ""
 pubDate: "${dateStr}"
 draft: true
+category: "${category.replace(/"/g, '\\"')}"
 ---
 
 `;
