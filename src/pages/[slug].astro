@@ -23,7 +23,18 @@ const categorySlug = category
 const rawBase = import.meta.env.BASE_URL ?? "/";
 const basePath =
   rawBase === "/" ? "/" : `/${rawBase.replace(/^\/+|\/+$/g, "")}/`;
-const canonical = `${basePath}${post.slug}/`;
+const siteUrl = Astro.site ?? new URL("https://jkgooooooo.github.io");
+const requestedCanonical = post.data.canonicalURL?.trim();
+const localCanonical = new URL(`${basePath}${post.slug}/`, siteUrl).toString();
+const canonical = (() => {
+  if (!requestedCanonical) return localCanonical;
+  try {
+    const parsed = new URL(requestedCanonical);
+    return parsed.origin === siteUrl.origin ? parsed.toString() : localCanonical;
+  } catch {
+    return localCanonical;
+  }
+})();
 const publishedTime = new Date(post.data.pubDate).toISOString();
 const wordCount = (post.body || "").split(/\s+/).filter(Boolean).length;
 const readingMinutes = Math.max(
@@ -71,6 +82,36 @@ if (!relatedPosts.length) {
     )
     .slice(0, 5);
 }
+
+const imagePath = post.data.ogImage?.trim() || `${basePath}og-default.svg`;
+const imageUrl = new URL(imagePath, siteUrl).toString();
+const keywords = Array.from(
+  new Set([category, ...(post.data.tags ?? [])].map((v) => String(v).trim()).filter(Boolean)),
+);
+const articleJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: post.data.title,
+  description,
+  datePublished: publishedTime,
+  dateModified: publishedTime,
+  url: canonical,
+  mainEntityOfPage: {
+    "@type": "WebPage",
+    "@id": canonical,
+  },
+  inLanguage: "ko-KR",
+  image: [imageUrl],
+  author: {
+    "@type": "Person",
+    name: "JKGOOOOOOO",
+  },
+  publisher: {
+    "@type": "Organization",
+    name: "JKGOOOOOOO Blog",
+  },
+  keywords,
+};
 ---
 
 <Layout
@@ -79,6 +120,7 @@ if (!relatedPosts.length) {
   canonical={canonical}
   type="article"
   publishedTime={publishedTime}
+  jsonLd={articleJsonLd}
 >
   <main id="main-content" class="post-page">
     {hasBody ? (

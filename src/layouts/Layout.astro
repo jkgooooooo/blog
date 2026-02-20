@@ -6,6 +6,7 @@ const {
   ogImage,
   type = "website",
   publishedTime,
+  jsonLd,
 } = Astro.props;
 
 const defaultSite = "https://jkgooooooo.github.io";
@@ -25,6 +26,10 @@ const ogImageUrl = new URL(resolvedOgImage, siteUrl).toString();
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
+    <meta
+      name="google-site-verification"
+      content="5-_fMNBE9g5JqJJkwBXHMB4ypa779G8Zcur-hLp-kPM"
+    />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -50,6 +55,7 @@ const ogImageUrl = new URL(resolvedOgImage, siteUrl).toString();
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
     {publishedTime ? <meta property="article:published_time" content={publishedTime} /> : null}
+    {jsonLd ? <script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script> : null}
   </head>
   <body>
     <div class="site-wrap">

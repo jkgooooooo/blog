@@ -8,6 +8,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "new:post": "node scripts/new-post.mjs",
+    "write:url": "node scripts/write-from-url.mjs",
     "tistory:summary": "node scripts/generate-tistory-summary.mjs"
   },
   "dependencies": {
