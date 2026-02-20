@@ -53,11 +53,12 @@ const ogImageUrl = new URL(resolvedOgImage, siteUrl).toString();
   </head>
   <body>
     <div class="site-wrap">
+      <a class="skip-link" href="#main-content">본문으로 건너뛰기</a>
       <div class="content-wrap">
         <slot />
       </div>
       <footer class="site-footer">
-        <nav>
+        <nav class="site-nav">
           <a href={basePath}>Home</a>
           <a href={`${basePath}posts/`}>Posts</a>
           <a href={`${basePath}categories/`}>Categories</a>
@@ -72,13 +73,17 @@ const ogImageUrl = new URL(resolvedOgImage, siteUrl).toString();
 <style>
   :root {
     color-scheme: dark;
-    --bg: #0b0b0c;
+    --bg: #05070b;
     --text: #d4d4d8;
-    --heading: #f4f4f5;
-    --muted: #a1a1aa;
-    --line: #27272a;
+    --heading: #f5f7fb;
+    --muted: #9ca3af;
+    --line: rgba(148, 163, 184, 0.16);
     --accent: #60a5fa;
-    --surface: #111113;
+    --surface: #111722;
+    --surface-soft: #0f141d;
+    --surface-hover: #182234;
+    --max-width: 780px;
+    --focus-ring: 0 0 0 2px #0b0b0c, 0 0 0 4px #60a5fa;
   }
 
   html,
@@ -87,11 +92,14 @@ const ogImageUrl = new URL(resolvedOgImage, siteUrl).toString();
     background: var(--bg);
     color: var(--text);
     font-family: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    line-height: 1.65;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
   }
 
   .site-wrap {
     min-height: 100vh;
-    width: min(760px, calc(100% - 2rem));
+    width: min(var(--max-width), calc(100% - 2rem));
     margin: 0 auto;
     display: flex;
     flex-direction: column;
@@ -99,25 +107,48 @@ const ogImageUrl = new URL(resolvedOgImage, siteUrl).toString();
 
   .content-wrap {
     flex: 1;
-    padding: 3rem 0 2.5rem;
+    padding: clamp(4.25rem, 10vh, 6rem) 0 2.8rem;
     animation: fade-in 220ms ease;
   }
 
+  .skip-link {
+    position: absolute;
+    left: -999px;
+    top: 0.75rem;
+    z-index: 1000;
+    background: #1f2937;
+    color: #f4f4f5;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 700;
+  }
+
+  .skip-link:focus-visible {
+    left: 1rem;
+  }
+
   .site-footer {
-    padding: 1rem 0 2rem;
+    margin-top: 0.8rem;
+    padding: 0.65rem 0 1rem;
+    transition:
+      opacity 180ms ease,
+      transform 180ms ease;
   }
 
   .site-footer nav {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.8rem;
+    gap: 0.62rem 0.88rem;
   }
 
   .site-footer a {
-    font-size: 0.9rem;
+    font-size: 0.83rem;
     color: var(--muted);
     text-decoration: none;
     font-weight: 600;
+    transition: color 120ms ease;
   }
 
   .site-footer a:hover {
@@ -140,6 +171,17 @@ const ogImageUrl = new URL(resolvedOgImage, siteUrl).toString();
   :global(a) {
     color: inherit;
     text-underline-offset: 0.14em;
+    text-decoration-thickness: 0.08em;
+  }
+
+  :global(a:focus-visible),
+  :global(button:focus-visible),
+  :global(input:focus-visible),
+  :global(textarea:focus-visible),
+  :global(select:focus-visible) {
+    outline: 0;
+    box-shadow: var(--focus-ring);
+    border-radius: 8px;
   }
 
   :global(::selection) {
@@ -157,7 +199,24 @@ const ogImageUrl = new URL(resolvedOgImage, siteUrl).toString();
 
   @media (max-width: 640px) {
     .content-wrap {
-      padding-top: 1.8rem;
+      padding-top: 2.6rem;
+    }
+
+    .site-footer.is-hidden {
+      opacity: 0;
+      transform: translateY(12px);
+      pointer-events: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
     }
   }
 </style>

@@ -6,187 +6,187 @@ const rawBase = import.meta.env.BASE_URL ?? "/";
 const basePath =
   rawBase === "/" ? "/" : `/${rawBase.replace(/^\/+|\/+$/g, "")}/`;
 
-const categoryToSlug = (category) =>
-  category
-    .toLowerCase()
-    .replace(/[^a-z0-9가-힣\s-]/g, "")
-    .trim()
-    .replace(/\s+/g, "-") || "general";
-
 const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
   (a, b) => new Date(b.data.pubDate).valueOf() - new Date(a.data.pubDate).valueOf(),
 );
 
-const latestPosts = posts.slice(0, 6);
-const categories = posts.reduce((acc, post) => {
-  const category = post.data.category || "General";
-  acc[category] = (acc[category] || 0) + 1;
-  return acc;
-}, {});
+const HOME_POST_LIMIT = 6;
+const latestPosts = posts.slice(0, HOME_POST_LIMIT);
+const remainingPosts = Math.max(0, posts.length - latestPosts.length);
+const getReadingMinutes = (body = "") =>
+  Math.max(1, Math.ceil(body.split(/\s+/).filter(Boolean).length / 220));
+const getPrimaryTopic = (post) => post.data.tags?.[0] ?? post.data.category ?? "General";
+const formatDate = (date) => new Date(date).toLocaleDateString("ko-KR");
 ---
 
 <Layout title="JKGOOOOOOO Tech Blog" description="IT 기술 정리와 개발 기록">
-  <main class="home">
+  <main id="main-content" class="home">
     <header class="intro">
       <h1>JKGOOOOOOO Blog</h1>
+      <p>기술 메모를 짧게 기록하고, 장기적으로 다시 보기 쉽게 정리합니다.</p>
     </header>
 
-    <section class="home-section">
-      <div class="section-head">
-        <h2>최신 글</h2>
-        <a href={`${basePath}posts/`}>모든 글 보기</a>
-      </div>
-      <ul class="post-list">
-        {
-          latestPosts.map((post) => (
-            <li>
-              <a class="post-cell" href={`${basePath}${post.slug}/`}>
-                <h3>{post.data.title}</h3>
-                <p>{post.data.description || "요약 설명을 추가해 주세요."}</p>
-                <div class="meta">
-                  <span class="cat">{post.data.category || "General"}</span>
-                  <time datetime={new Date(post.data.pubDate).toISOString()}>
-                    {new Date(post.data.pubDate).toLocaleDateString("ko-KR")}
-                  </time>
-                </div>
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </section>
-
-    <section class="home-section">
-      <div class="section-head">
-        <h2>카테고리</h2>
-        <a href={`${basePath}categories/`}>카테고리 페이지</a>
-      </div>
-      <ul class="category-list">
-        {Object.entries(categories).map(([name, count]) => (
+    <section class="home-feed" aria-label="최근 글">
+      <ul class="row-list">
+        {latestPosts.map((post) => (
           <li>
-            <a href={`${basePath}categories/${categoryToSlug(name)}/`}>
-              <span>{name}</span>
-              <small>{count}</small>
+            <a class="row-link" href={`${basePath}${post.slug}/`}>
+              <div class="row-main">
+                <h2>{post.data.title}</h2>
+                <p class="row-desc">{post.data.description || "요약 설명을 추가해 주세요."}</p>
+                <p class="row-meta">
+                  <span>{getPrimaryTopic(post)}</span>
+                  <span aria-hidden="true">·</span>
+                  <span>{getReadingMinutes(post.body)} min</span>
+                </p>
+              </div>
+              <time datetime={new Date(post.data.pubDate).toISOString()}>{formatDate(post.data.pubDate)}</time>
             </a>
           </li>
         ))}
       </ul>
+      {remainingPosts > 0 ? (
+        <p class="more-hint">
+          <span aria-hidden="true">↓</span>
+          {remainingPosts}개의 글이 더 있습니다
+        </p>
+      ) : null}
+      <div class="section-cta">
+        <a href={`${basePath}posts/`}>전체 글 보러가기</a>
+      </div>
     </section>
   </main>
 </Layout>
 
 <style>
+  .home {
+    --space-32: 2rem;
+    --space-48: 3rem;
+  }
+
   .intro h1 {
-    font-size: clamp(2rem, 5vw, 2.8rem);
-    line-height: 1.06;
-    margin-bottom: 0.75rem;
+    font-size: clamp(2.1rem, 6vw, 3rem);
+    line-height: 1.04;
+    margin-bottom: 0.5rem;
   }
 
   .intro p {
     margin: 0;
     color: #a1a1aa;
-    line-height: 1.8;
+    max-width: 62ch;
+    line-height: 1.7;
   }
 
-  .home-section {
-    margin-top: 2.2rem;
+  .home-feed {
+    margin-top: var(--space-48);
   }
 
-  .section-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 0.6rem;
-    padding-bottom: 0.55rem;
-  }
-
-  h2 {
-    font-size: 1rem;
-  }
-
-  .section-head a {
-    font-size: 0.85rem;
-    color: #a1a1aa;
-    text-decoration: none;
-    font-weight: 600;
-  }
-
-  .section-head a:hover {
-    color: #f4f4f5;
-  }
-
-  .post-list {
+  .row-list {
     list-style: none;
     margin: 0;
     padding: 0;
+    border-top: 1px solid var(--line);
   }
 
-  .post-cell {
-    display: block;
+  .row-link {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 7.3rem;
+    gap: 0.75rem 1rem;
+    align-items: start;
+    padding: 1rem 0.15rem;
+    border-bottom: 1px solid var(--line);
     text-decoration: none;
-    padding: 1rem 0;
     transition: background-color 140ms ease;
   }
 
-  .post-cell:hover {
-    background: #111113;
+  .row-link:hover {
+    background: rgba(148, 163, 184, 0.06);
   }
 
-  .post-list h3 {
-    font-size: 1.22rem;
-    line-height: 1.32;
-    margin-bottom: 0.32rem;
-  }
-
-  .post-list p {
+  .row-main h2 {
     margin: 0;
-    color: #a1a1aa;
-    line-height: 1.75;
+    font-size: 1.1rem;
+    line-height: 1.36;
   }
 
-  .meta {
-    margin-top: 0.5rem;
-    display: flex;
-    gap: 0.65rem;
+  .row-desc {
+    margin: 0.34rem 0 0;
+    color: #a1a1aa;
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .row-meta {
+    margin: 0.4rem 0 0;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    color: #94a3b8;
+    display: inline-flex;
     align-items: center;
-    font-size: 0.82rem;
+    gap: 0.35rem;
   }
 
-  .cat {
-    color: #60a5fa;
-    font-weight: 700;
-  }
-
-  .meta time {
+  .row-link time {
     color: #a1a1aa;
+    font-size: 0.86rem;
     font-weight: 600;
+    text-align: right;
+    line-height: 1.45;
+    white-space: nowrap;
+    padding-top: 0.08rem;
   }
 
-  .category-list {
-    list-style: none;
-    margin: 0.8rem 0 0;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem 1rem;
+  .section-cta {
+    margin-top: 0.75rem;
   }
 
-  .category-list li a {
+  .more-hint {
+    margin: 1rem 0 0;
+    color: #94a3b8;
+    font-size: 0.84rem;
+    line-height: 1.45;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.36rem;
+  }
+
+  .more-hint span {
+    color: #a1a1aa;
+    font-size: 0.9rem;
+  }
+
+  .section-cta a {
+    display: inline-flex;
+    align-items: center;
     text-decoration: none;
+    font-size: 0.88rem;
     font-weight: 700;
     color: #d4d4d8;
-    display: inline-flex;
-    align-items: baseline;
-    gap: 0.4rem;
+    background: var(--surface);
+    box-shadow: inset 0 0 0 1px var(--line);
+    border-radius: 999px;
+    padding: 0.5rem 0.72rem;
+    transition: background-color 120ms ease;
   }
 
-  .category-list li a:hover span {
-    text-decoration: underline;
+  .section-cta a:hover {
+    background: var(--surface-hover);
   }
 
-  .category-list small {
-    color: #a1a1aa;
-    font-size: 0.76rem;
-    font-weight: 700;
+  @media (max-width: 720px) {
+    .row-link {
+      grid-template-columns: 1fr;
+      gap: 0.45rem;
+      padding: 0.9rem 0.05rem;
+    }
+
+    .row-link time {
+      text-align: left;
+      font-size: 0.8rem;
+      padding-top: 0;
+    }
   }
 </style>

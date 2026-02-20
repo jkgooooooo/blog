@@ -32,6 +32,19 @@ jobs:
         run: npm ci
 
       - name: Build
+        env:
+          PUBLIC_GISCUS_REPO: jkgooooooo/blog
+          PUBLIC_GISCUS_REPO_ID: R_kgDORTo-rg
+          PUBLIC_GISCUS_CATEGORY: Comments
+          PUBLIC_GISCUS_CATEGORY_ID: DIC_kwDORTo-rs4C21Bm
+          PUBLIC_GISCUS_MAPPING: pathname
+          PUBLIC_GISCUS_STRICT: "0"
+          PUBLIC_GISCUS_REACTIONS_ENABLED: "1"
+          PUBLIC_GISCUS_EMIT_METADATA: "0"
+          PUBLIC_GISCUS_INPUT_POSITION: bottom
+          PUBLIC_GISCUS_THEME: preferred_color_scheme
+          PUBLIC_GISCUS_LANG: ko
+          PUBLIC_GISCUS_LOADING: lazy
         run: npm run build
 
       - name: Upload artifact

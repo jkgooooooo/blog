@@ -18,6 +18,7 @@ const enabled = Boolean(repo && repoId && categoryId);
 {
   enabled ? (
     <section class="giscus-wrap">
+      <h2 class="giscus-title">댓글</h2>
       <script
         src="https://giscus.app/client.js"
         data-repo={repo}
@@ -43,5 +44,11 @@ const enabled = Boolean(repo && repoId && categoryId);
   .giscus-wrap {
     margin-top: 2.8rem;
     padding-top: 1.4rem;
+  }
+
+  .giscus-title {
+    margin: 0 0 0.9rem;
+    font-size: 1.2rem;
+    line-height: 1.2;
   }
 </style>

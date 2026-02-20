@@ -33,7 +33,7 @@ const categories = Object.entries(grouped)
 ---
 
 <Layout title="Categories | JKGOOOOOOO Blog" description="카테고리 목록">
-  <main class="categories-page">
+  <main id="main-content" class="categories-page">
     <header>
       <h1>Categories</h1>
       <p>주제별로 글을 묶어 볼 수 있습니다.</p>
@@ -58,6 +58,7 @@ const categories = Object.entries(grouped)
   header p {
     margin: 0.5rem 0 0;
     color: #a1a1aa;
+    line-height: 1.72;
   }
 
   ul {
@@ -65,13 +66,24 @@ const categories = Object.entries(grouped)
     margin: 1.1rem 0 0;
     padding: 0;
     display: grid;
-    gap: 0;
+    gap: 0.55rem;
   }
 
   li a {
     display: block;
     text-decoration: none;
-    padding: 0.85rem 0;
+    padding: 0.85rem 0.75rem;
+    border-radius: 12px;
+    background: var(--surface);
+    box-shadow: inset 0 0 0 1px var(--line);
+    transition:
+      background-color 120ms ease,
+      transform 120ms ease;
+  }
+
+  li a:hover {
+    background: var(--surface-hover);
+    transform: translateY(-1px);
   }
 
   .line {

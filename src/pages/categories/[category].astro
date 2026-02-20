@@ -35,7 +35,7 @@ const { categoryName, posts } = Astro.props;
   title={`${categoryName} | Categories`}
   description={`${categoryName} 카테고리 글 목록`}
 >
-  <main class="category-page">
+  <main id="main-content" class="category-page">
     <header>
       <a class="back" href={`${basePath}categories/`}>← 카테고리 목록</a>
       <h1>{categoryName}</h1>
@@ -81,13 +81,24 @@ const { categoryName, posts } = Astro.props;
     margin: 1rem 0 0;
     padding: 0;
     display: grid;
-    gap: 0;
+    gap: 0.55rem;
   }
 
   li a {
     display: block;
     text-decoration: none;
-    padding: 0.9rem 0;
+    padding: 0.9rem 0.75rem;
+    border-radius: 12px;
+    background: var(--surface);
+    box-shadow: inset 0 0 0 1px var(--line);
+    transition:
+      background-color 120ms ease,
+      transform 120ms ease;
+  }
+
+  li a:hover {
+    background: var(--surface-hover);
+    transform: translateY(-1px);
   }
 
   h2 {
