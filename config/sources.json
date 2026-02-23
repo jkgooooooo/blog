@@ -1,0 +1,58 @@
+[
+  {
+    "id": "openai-blog",
+    "name": "OpenAI Blog",
+    "feed": "https://openai.com/news/rss.xml",
+    "homepage": "https://openai.com/news/",
+    "weight": 1.2
+  },
+  {
+    "id": "google-ai-blog",
+    "name": "Google AI Blog",
+    "feed": "https://blog.google/technology/ai/rss/",
+    "homepage": "https://blog.google/technology/ai/",
+    "weight": 1.2
+  },
+  {
+    "id": "anthropic-news",
+    "name": "Anthropic News",
+    "feed": "https://www.anthropic.com/news/rss.xml",
+    "homepage": "https://www.anthropic.com/news",
+    "weight": 1.15
+  },
+  {
+    "id": "apple-dev-news",
+    "name": "Apple Developer News",
+    "feed": "https://developer.apple.com/news/rss/news.rss",
+    "homepage": "https://developer.apple.com/news/",
+    "weight": 1.1
+  },
+  {
+    "id": "swift-org-blog",
+    "name": "Swift.org Blog",
+    "feed": "https://www.swift.org/blog/feed.xml",
+    "homepage": "https://www.swift.org/blog/",
+    "weight": 1.05
+  },
+  {
+    "id": "github-changelog",
+    "name": "GitHub Changelog",
+    "feed": "https://github.blog/changelog/feed/",
+    "homepage": "https://github.blog/changelog/",
+    "weight": 1.0
+  },
+  {
+    "id": "techcrunch-ai",
+    "name": "TechCrunch AI",
+    "feed": "https://techcrunch.com/category/artificial-intelligence/feed/",
+    "homepage": "https://techcrunch.com/category/artificial-intelligence/",
+    "weight": 0.9
+  },
+  {
+    "id": "theverge-ai",
+    "name": "The Verge AI",
+    "feed": "https://www.theverge.com/ai-artificial-intelligence/rss/index.xml",
+    "homepage": "https://www.theverge.com/ai-artificial-intelligence",
+    "weight": 0.85
+  }
+]

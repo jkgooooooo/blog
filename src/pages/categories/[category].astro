@@ -7,6 +7,7 @@ const basePath =
   rawBase === "/" ? "/" : `/${rawBase.replace(/^\/+|\/+$/g, "")}/`;
 
 export async function getStaticPaths() {
+  const includeDrafts = import.meta.env.DEV;
   const categoryToSlug = (category) =>
     category
       .toLowerCase()
@@ -14,7 +15,7 @@ export async function getStaticPaths() {
       .trim()
       .replace(/\s+/g, "-") || "general";
 
-  const posts = await getCollection("blog", ({ data }) => !data.draft);
+  const posts = await getCollection("blog", ({ data }) => includeDrafts || !data.draft);
   const categories = [...new Set(posts.map((post) => post.data.category || "General"))];
 
   return categories.map((categoryName) => ({

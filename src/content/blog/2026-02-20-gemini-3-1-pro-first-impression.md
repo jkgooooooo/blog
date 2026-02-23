@@ -19,7 +19,7 @@ TechCrunch 기사에서 Gemini 3.1 Pro 소식을 보고 바로 확인해봤습�
 
 ![Antigravity에서 Gemini 3.1 Pro 모델을 선택하는 화면](/blog/images/blog/gemini-3-1-pro/antigravity-model-picker.png)
 
-정리하면:
+핵심만 보면:
 
 - 공개일: 2026-02-19
 - 2026-02-20 기준: Antigravity에서 선택 가능

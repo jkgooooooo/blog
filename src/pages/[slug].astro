@@ -2,9 +2,11 @@
 import { getCollection, render } from "astro:content";
 import GiscusComments from "../components/GiscusComments.astro";
 import Layout from "../layouts/Layout.astro";
+const includeDrafts = import.meta.env.DEV;
 
 export async function getStaticPaths() {
-  const posts = await getCollection("blog", ({ data }) => !data.draft);
+  const includeDrafts = import.meta.env.DEV;
+  const posts = await getCollection("blog", ({ data }) => includeDrafts || !data.draft);
   return posts.map((post) => ({
     params: { slug: post.slug },
     props: { post },
@@ -47,7 +49,7 @@ const leadText =
     : null);
 
 const hasBody = Boolean(post.body?.trim());
-const orderedPosts = (await getCollection("blog", ({ data }) => !data.draft))
+const orderedPosts = (await getCollection("blog", ({ data }) => includeDrafts || !data.draft))
   .slice()
   .sort((a, b) => {
     const dateDiff = new Date(b.data.pubDate).valueOf() - new Date(a.data.pubDate).valueOf();
@@ -376,6 +378,18 @@ const articleJsonLd = {
     color: #d4d4d8;
     font-size: 1.02rem;
     max-width: 70ch;
+  }
+
+  .post-body :global(a) {
+    color: #93c5fd;
+    text-decoration: underline;
+    text-underline-offset: 0.18em;
+    text-decoration-thickness: 1px;
+    cursor: pointer;
+  }
+
+  .post-body :global(a:hover) {
+    color: #bfdbfe;
   }
 
   .post-body :global(p + p),

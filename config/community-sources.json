@@ -1,0 +1,34 @@
+[
+  {
+    "id": "hn-ai",
+    "name": "Hacker News AI",
+    "type": "hackernews",
+    "query": "AI model release OR OpenAI OR Gemini OR Claude",
+    "weight": 1.25
+  },
+  {
+    "id": "hn-devtools",
+    "name": "Hacker News Dev",
+    "type": "hackernews",
+    "query": "Swift OR Xcode OR TypeScript OR Rust OR programming language",
+    "weight": 1.15
+  },
+  {
+    "id": "reddit-machinelearning",
+    "name": "Reddit r/MachineLearning",
+    "type": "reddit",
+    "subreddit": "MachineLearning",
+    "sort": "top",
+    "time": "day",
+    "weight": 1.2
+  },
+  {
+    "id": "reddit-programming",
+    "name": "Reddit r/programming",
+    "type": "reddit",
+    "subreddit": "programming",
+    "sort": "top",
+    "time": "day",
+    "weight": 1.05
+  }
+]

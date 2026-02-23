@@ -17,6 +17,11 @@ pnpm-debug.log*
 .env
 .env.production
 
+# automation runtime data
+data/inbox.jsonl
+data/selected-topics.json
+data/seen-topics.json
+
 # macOS-specific files
 .DS_Store
 

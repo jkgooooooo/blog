@@ -1,0 +1,94 @@
+{
+  "include": [
+    "ai",
+    "artificial intelligence",
+    "llm",
+    "model",
+    "agent",
+    "rag",
+    "inference",
+    "benchmark",
+    "gpt",
+    "gemini",
+    "claude",
+    "openai",
+    "anthropic",
+    "google ai",
+    "ios",
+    "swift",
+    "xcode",
+    "apple developer",
+    "app store",
+    "typescript",
+    "node",
+    "python",
+    "rust",
+    "github",
+    "release",
+    "sdk",
+    "api",
+    "framework",
+    "security",
+    "cloud",
+    "semiconductor"
+  ],
+  "boost": [
+    "launch",
+    "launched",
+    "announced",
+    "update",
+    "preview",
+    "beta",
+    "breaking",
+    "major",
+    "new model",
+    "performance",
+    "vulnerability",
+    "outage",
+    "incident"
+  ],
+  "exclude": [
+    "sponsored",
+    "advertisement",
+    "promo",
+    "coupon"
+  ],
+  "bucketRules": {
+    "AI": [
+      "ai",
+      "llm",
+      "model",
+      "agent",
+      "rag",
+      "gemini",
+      "gpt",
+      "claude",
+      "openai",
+      "anthropic"
+    ],
+    "iOS": [
+      "ios",
+      "swift",
+      "xcode",
+      "apple developer",
+      "app store"
+    ],
+    "Dev": [
+      "typescript",
+      "node",
+      "python",
+      "rust",
+      "framework",
+      "api",
+      "sdk",
+      "github"
+    ],
+    "IT": [
+      "security",
+      "cloud",
+      "outage",
+      "incident",
+      "semiconductor"
+    ]
+  }
+}

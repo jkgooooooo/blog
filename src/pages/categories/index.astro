@@ -5,6 +5,7 @@ import Layout from "../../layouts/Layout.astro";
 const rawBase = import.meta.env.BASE_URL ?? "/";
 const basePath =
   rawBase === "/" ? "/" : `/${rawBase.replace(/^\/+|\/+$/g, "")}/`;
+const includeDrafts = import.meta.env.DEV;
 
 const categoryToSlug = (category) =>
   category
@@ -13,7 +14,7 @@ const categoryToSlug = (category) =>
     .trim()
     .replace(/\s+/g, "-") || "general";
 
-const posts = await getCollection("blog", ({ data }) => !data.draft);
+const posts = await getCollection("blog", ({ data }) => includeDrafts || !data.draft);
 
 const grouped = posts.reduce((acc, post) => {
   const category = post.data.category || "General";
