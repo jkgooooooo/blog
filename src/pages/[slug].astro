@@ -17,6 +17,7 @@ const { post } = Astro.props;
 const { Content } = await render(post);
 const description = post.data.description?.trim() || `${post.data.title} 글 요약`;
 const category = post.data.category || "General";
+const displayTags = (post.data.tags?.length ? post.data.tags : [category]).slice(0, 8);
 const categorySlug = category
   .toLowerCase()
   .replace(/[^a-z0-9가-힣\s-]/g, "")
@@ -135,13 +136,20 @@ const articleJsonLd = {
       <h1>{post.data.title}</h1>
       <div class="meta">
         <a class="meta-category" href={`${basePath}categories/${categorySlug}/`}>
-          {post.data.tags?.[0] ?? category}
+          {category}
         </a>
         <span class="meta-sep" aria-hidden="true">·</span>
         <span>{readingMinutes} min</span>
         <span class="meta-sep" aria-hidden="true">·</span>
         <time datetime={publishedTime}>{new Date(post.data.pubDate).toLocaleDateString("ko-KR")}</time>
       </div>
+      {displayTags.length ? (
+        <div class="meta-tags-row" aria-label="태그">
+          {displayTags.map((tag) => (
+            <span class="meta-tag-chip">#{tag}</span>
+          ))}
+        </div>
+      ) : null}
     </header>
 
     <div class="section-divider" aria-hidden="true"></div>
@@ -321,6 +329,25 @@ const articleJsonLd = {
   .meta-sep {
     color: #64748b;
     transform: translateY(-0.01em);
+  }
+
+  .meta-tags-row {
+    margin-top: 0.55rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .meta-tag-chip {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 0.18rem 0.5rem;
+    background: var(--surface-soft);
+    color: #b6c2d1;
+    font-size: 0.74rem;
+    line-height: 1.2;
+    font-weight: 600;
   }
 
   .section-divider {

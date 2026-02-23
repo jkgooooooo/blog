@@ -16,7 +16,8 @@ const latestPosts = posts.slice(0, HOME_POST_LIMIT);
 const remainingPosts = Math.max(0, posts.length - latestPosts.length);
 const getReadingMinutes = (body = "") =>
   Math.max(1, Math.ceil(body.split(/\s+/).filter(Boolean).length / 220));
-const getPrimaryTopic = (post) => post.data.tags?.[0] ?? post.data.category ?? "General";
+const getDisplayTags = (post) =>
+  (post.data.tags?.length ? post.data.tags : [post.data.category ?? "General"]).slice(0, 4);
 const formatDate = (date) => new Date(date).toLocaleDateString("ko-KR");
 ---
 
@@ -36,7 +37,11 @@ const formatDate = (date) => new Date(date).toLocaleDateString("ko-KR");
                 <h2>{post.data.title}</h2>
                 <p class="row-desc">{post.data.description || "요약 설명을 추가해 주세요."}</p>
                 <p class="row-meta">
-                  <span>{getPrimaryTopic(post)}</span>
+                  <span class="meta-tags">
+                    {getDisplayTags(post).map((tag) => (
+                      <span class="tag-pill">#{tag}</span>
+                    ))}
+                  </span>
                   <span aria-hidden="true">·</span>
                   <span>{getReadingMinutes(post.body)} min</span>
                 </p>
@@ -126,8 +131,27 @@ const formatDate = (date) => new Date(date).toLocaleDateString("ko-KR");
     line-height: 1.4;
     color: #94a3b8;
     display: inline-flex;
-    align-items: center;
+    align-items: flex-start;
+    flex-wrap: wrap;
     gap: 0.35rem;
+  }
+
+  .meta-tags {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+
+  .tag-pill {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 0.1rem 0.42rem;
+    background: var(--surface-soft);
+    color: #b6c2d1;
+    font-size: 0.74rem;
+    line-height: 1.2;
+    font-weight: 600;
   }
 
   .row-link time {
