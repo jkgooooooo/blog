@@ -2,7 +2,7 @@
 title: "Claude Code 데스크톱에 프리뷰/리뷰/머지 기능이 추가됐습니다"
 description: "Claude Code 데스크톱 업데이트에서 앱 프리뷰, 코드 리뷰, PR 자동화까지 한 번에 정리했습니다."
 pubDate: "2026-02-23"
-draft: true
+draft: false
 category: "AI"
 tags: ["AI", "Claude", "Anthropic", "DevTool"]
 canonicalURL: "https://claude.com/blog/preview-review-and-merge-with-claude-code"
