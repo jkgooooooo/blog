@@ -1,5 +1,5 @@
 ---
-title: "Gemini 3.1 Pro가 나와서 짧게 써본 후기"
+title: "구글 제미나이 3.1 프로 짧은 사용 후기"
 description: "TechCrunch 기사 확인 후, Antigravity에서 직접 써본 첫 인상 정리"
 pubDate: "2026-02-20"
 draft: false
