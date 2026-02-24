@@ -60,6 +60,7 @@ function parseArgs(argv) {
 }
 
 const opts = parseArgs(args);
+const PROMPT_TEMPLATE_PATH = path.join(process.cwd(), "prompt.md");
 
 let sourceUrl;
 try {
@@ -211,34 +212,23 @@ async function generateWithLLM({ rawText, source, note, dateStr, defaultTitle })
     "Output JSON only.",
   ].join(" ");
 
+  const template = loadUrlPromptTemplate();
+  const userFromTemplate = template
+    ? fillTemplate(template, {
+        TODAY: dateStr,
+        URL: source,
+        SOURCE_TEXT: rawText.slice(0, 12000),
+        MY_NOTE: note || "(없음)",
+      })
+    : buildDefaultPrompt({
+        dateStr,
+        source,
+        note,
+        sourceText: rawText.slice(0, 12000),
+      });
+
   const user = `
-아래 링크를 읽고, 개인 블로그 초안을 작성해주세요.
-
-요구사항:
-- 톤: 친근한 존댓말, 1인칭 경험 섞기
-- 길이: 짧은 글
-- 구성:
-  1) "핵심 요약" 2~3줄
-  2) "기사 내용" 6~7줄
-  3) "코멘트" 2~3줄
-- "기사 내용"에는 반드시 원문에서 확인 가능한 구체 변경점(추가된 기능, 바뀐 흐름, 지원 범위)을 포함
-- 과장 금지, 확실치 않으면 "~로 보입니다"처럼 표현
-- 날짜 기준 문맥 반영: 오늘은 ${dateStr}
-- 카테고리: AI
-- 태그: 3~5개, 너무 과하지 않게
-- canonicalURL은 원문 링크
-- 본문 맨 아래에 "## 출처" 섹션을 만들고 원문 링크 1회 포함
-- 제목은 한글 중심으로 작성하고, Gemini/GPT/Swift 같은 전문용어만 영문 허용
-- "제가 해보겠습니다/테스트하겠습니다" 같은 할 일 문장 금지
-
-추가 사용자 메모:
-${note || "(없음)"}
-
-원문 URL:
-${source}
-
-원문 텍스트(잘린 버전):
-${rawText.slice(0, 12000)}
+${userFromTemplate}
 
 반드시 아래 JSON 스키마로만 응답:
 {
@@ -287,6 +277,64 @@ ${rawText.slice(0, 12000)}
   if (!bodyMd) return null;
 
   return { title, description, category, tags, bodyMd };
+}
+
+function loadUrlPromptTemplate() {
+  try {
+    const md = fs.readFileSync(PROMPT_TEMPLATE_PATH, "utf8");
+    const sectionRe = /##\s*1\)\s*URL\s*기반\s*글\s*작성\s*프롬프트[\s\S]*?```text\s*([\s\S]*?)```/i;
+    const match = md.match(sectionRe);
+    const template = match?.[1]?.trim();
+    if (!template) return null;
+    return template;
+  } catch {
+    return null;
+  }
+}
+
+function fillTemplate(template, vars) {
+  let out = String(template);
+  for (const [key, value] of Object.entries(vars)) {
+    const re = new RegExp(`{{\\s*${escapeRegExp(key)}\\s*}}`, "g");
+    out = out.replace(re, String(value ?? ""));
+  }
+  return out;
+}
+
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function buildDefaultPrompt({ dateStr, source, note, sourceText }) {
+  return `
+아래 링크를 읽고, 개인 블로그 초안을 작성해주세요.
+
+요구사항:
+- 톤: 친근한 존댓말, 1인칭 경험 섞기
+- 길이: 짧은 글
+- 구성:
+  1) "핵심 요약" 2~3줄
+  2) "기사 내용" 6~7줄
+  3) "코멘트" 2~3줄
+- "기사 내용"에는 반드시 원문에서 확인 가능한 구체 변경점(추가된 기능, 바뀐 흐름, 지원 범위)을 포함
+- 과장 금지, 확실치 않으면 "~로 보입니다"처럼 표현
+- 날짜 기준 문맥 반영: 오늘은 ${dateStr}
+- 카테고리: AI
+- 태그: 3~5개, 너무 과하지 않게
+- canonicalURL은 원문 링크
+- 본문 맨 아래에 "## 출처" 섹션을 만들고 원문 링크 1회 포함
+- 제목은 한글 중심으로 작성하고, Gemini/GPT/Swift 같은 전문용어만 영문 허용
+- "제가 해보겠습니다/테스트하겠습니다" 같은 할 일 문장 금지
+
+추가 사용자 메모:
+${note || "(없음)"}
+
+원문 URL:
+${source}
+
+원문 텍스트(잘린 버전):
+${sourceText}
+`.trim();
 }
 
 function fallbackDraft({ title, description, source, lines, note, dateStr }) {
