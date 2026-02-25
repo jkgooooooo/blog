@@ -2,7 +2,7 @@
 title: "Astro 블로그에 Giscus 댓글 적용 방법 정리"
 description: "GitHub Discussions 카테고리 설정부터 Astro 연결까지, Giscus 댓글 적용 과정을 실제 사례 기준으로 정리했습니다."
 pubDate: "2026-02-24"
-draft: true
+draft: false
 category: "Dev"
 tags: ["Astro", "GitHub Pages", "Giscus", "댓글", "GitHub Discussions"]
 ---
