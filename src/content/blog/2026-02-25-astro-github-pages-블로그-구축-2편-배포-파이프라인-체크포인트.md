@@ -2,7 +2,7 @@
 title: "Astro + GitHub Pages 블로그 구축기 2편: 배포 파이프라인 체크 포인트"
 description: "로컬 작성부터 GitHub Pages 반영까지, 실제로 막히기 쉬운 포인트를 체크리스트 중심으로 정리했습니다."
 pubDate: "2026-02-25"
-draft: true
+draft: false
 category: "Dev"
 tags: ["Astro", "GitHub Pages", "GitHub Actions", "Deploy", "Checklist"]
 ---
