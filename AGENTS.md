@@ -22,6 +22,7 @@
 - Use headings in a logical hierarchy (H2/H3)
 - Prefer short paragraphs, bullets, and scannable sections
 - Include a concise takeaway section near the end
+- Write in natural Korean; avoid translation-style phrasing
 
 ### SEO
 - Must include: title, description, tags, date, canonical (if cross-post)
