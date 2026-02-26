@@ -45,6 +45,7 @@ jobs:
           PUBLIC_GISCUS_THEME: preferred_color_scheme
           PUBLIC_GISCUS_LANG: ko
           PUBLIC_GISCUS_LOADING: lazy
+          PUBLIC_GA_MEASUREMENT_ID: G-DZQ2R0G25L
         run: npm run build
 
       - name: Upload artifact
