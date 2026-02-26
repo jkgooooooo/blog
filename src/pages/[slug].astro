@@ -432,6 +432,40 @@ const articleJsonLd = {
     padding-left: 1.2rem;
   }
 
+  .post-body :global(table) {
+    width: min(100%, 70ch);
+    border-collapse: collapse;
+    margin: 1.1rem 0;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--surface-soft);
+    font-size: 0.96rem;
+  }
+
+  .post-body :global(th),
+  .post-body :global(td) {
+    padding: 0.72rem 0.82rem;
+    text-align: left;
+    vertical-align: top;
+    line-height: 1.6;
+  }
+
+  .post-body :global(th) {
+    color: #e2e8f0;
+    font-weight: 700;
+    background: rgba(148, 163, 184, 0.08);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .post-body :global(td) {
+    color: #d4d4d8;
+  }
+
+  .post-body :global(tr + tr td) {
+    border-top: 1px solid rgba(148, 163, 184, 0.2);
+  }
+
   .post-body :global(blockquote) {
     margin: 1.15rem 0;
     padding: 0.9rem 1rem;
